@@ -37,13 +37,7 @@ const SidebarContent: MenuItem[] = [
     heading: "UTILITIES",
     children: [
       {
-        name: "Typography",
-        icon: "solar:text-circle-outline",
-        id: uniqueId(),
-        url: "/admin/ui/typography",
-      },
-      {
-        name: "Table",
+        name: "User",
         icon: "solar:bedside-table-3-linear",
         id: uniqueId(),
         url: "/admin/ui/table",
@@ -53,46 +47,6 @@ const SidebarContent: MenuItem[] = [
         icon: "solar:password-minimalistic-outline",
         id: uniqueId(),
         url: "/admin/ui/form",
-      },
-      {
-        name: "Shadow",
-        icon: "solar:airbuds-case-charge-outline",
-        id: uniqueId(),
-        url: "/admin/ui/shadow",
-      },
-    ],
-  },
-  {
-    heading: "AUTH",
-    children: [
-      {
-        name: "Login",
-        icon: "solar:login-2-linear",
-        id: uniqueId(),
-        url: "/auth/login",
-      },
-      {
-        name: "Register",
-        icon: "solar:shield-user-outline",
-        id: uniqueId(),
-        url: "/auth/register",
-      },
-    ],
-  },
-  {
-    heading: "EXTRA",
-    children: [
-      {
-        name: "Icons",
-        icon: "solar:smile-circle-outline",
-        id: uniqueId(),
-        url: "admin/icons/solar",
-      },
-      {
-        name: "Sample Page",
-        icon: "solar:notes-minimalistic-outline",
-        id: uniqueId(),
-        url: "admin/sample-page",
       },
     ],
   },

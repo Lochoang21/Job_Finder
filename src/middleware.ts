@@ -29,7 +29,6 @@ export function middleware(request: NextRequest) {
         console.log('Redirecting: Not SUPER_ADMIN trying to access admin route');
         return NextResponse.redirect(new URL('/auth/forbidden', request.url));
     }
-
     return NextResponse.next();
 }
 

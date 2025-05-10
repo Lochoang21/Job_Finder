@@ -8,7 +8,6 @@ import NavCollapse from "./NavCollapse";
 import SimpleBar from "simplebar-react";
 import FullLogo from "../../shared/logo/FullLogo";
 import { Icon } from "@iconify/react";
-import Upgrade from "./Upgrade";
 
 const SidebarLayout = () => {
   return (
@@ -52,7 +51,6 @@ const SidebarLayout = () => {
                   ))}
                 </Sidebar.ItemGroup>
               </Sidebar.Items>
-              <Upgrade/>
             </SimpleBar>
           </Sidebar>
         </div>

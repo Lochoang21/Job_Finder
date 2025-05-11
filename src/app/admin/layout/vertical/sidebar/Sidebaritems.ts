@@ -40,7 +40,7 @@ const SidebarContent: MenuItem[] = [
         name: "User",
         icon: "solar:bedside-table-3-linear",
         id: uniqueId(),
-        url: "/admin/ui/table",
+        url: "/admin/ui/user",
       },
       {
         name: "Form",

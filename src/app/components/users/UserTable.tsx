@@ -1,10 +1,15 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { Badge, Dropdown, Table, TextInput, Select, Button, Spinner, Pagination } from "flowbite-react";
+import { Badge, Dropdown, Table, TextInput, Select, Button, Spinner, Pagination, Modal, Alert } from "flowbite-react";
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import { Icon } from "@iconify/react";
 import api from "@/services/api";
-import { User, ApiResponse } from "@/types/user";
+import { User, ApiResponse, DeleteUserResponse } from "@/types/user";
+import UserDetail from "@/app/components/users/UserDetail"
+import UpdateUser from "./UpdateUser";
+
+// Custom event for refreshing the table
+const refreshTableEvent = new Event("refreshUserTable");
 
 interface UserTableProps {
   refreshKey?: number;
@@ -20,6 +25,12 @@ const UserTable: React.FC<UserTableProps> = ({ refreshKey = 0 }) => {
   const [searchField, setSearchField] = useState("name");
   const [searchValue, setSearchValue] = useState("");
   const [internalRefreshKey, setInternalRefreshKey] = useState(0);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+  const [deleteSuccess, setDeleteSuccess] = useState<string | null>(null);
 
   // Fetch users from API
   const fetchUsers = async () => {
@@ -62,11 +73,48 @@ const UserTable: React.FC<UserTableProps> = ({ refreshKey = 0 }) => {
     fetchUsers();
   };
 
+  // Handle delete user
+  const handleDelete = async () => {
+    if (!selectedUser) return;
+    setDeleteError(null);
+    setDeleteSuccess(null);
+    setLoading(true);
+    try {
+      const response = await api.delete<DeleteUserResponse>(`/users/${selectedUser.id}`);
+      setDeleteSuccess(response.data.message || "User deleted successfully");
+      // Dispatch custom event to refresh table
+      window.dispatchEvent(refreshTableEvent);
+      setTimeout(() => {
+        setIsDeleteModalOpen(false);
+        setSelectedUser(null);
+      }, 1500); // Close modal after success
+    } catch (err: any) {
+      setDeleteError(err.response?.data?.message || "Failed to delete user");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Table action items (Edit, Delete)
   const tableActionData = [
-    { icon: "solar:eye-linear", listtitle: "View" },
-    { icon: "solar:pen-new-square-broken", listtitle: "Edit" },
-    { icon: "solar:trash-bin-minimalistic-outline", listtitle: "Delete" },
+    {
+      icon: "solar:eye-linear", listtitle: "View", onClick: (user: User) => {
+        setSelectedUser(user);
+        setIsDrawerOpen(true);
+      },
+    },
+    {
+      icon: "solar:pen-new-square-broken", listtitle: "Edit", onClick: (user: User) => {
+        setSelectedUser(user);
+        setIsUpdateModalOpen(true);
+      },
+    },
+    {
+      icon: "solar:trash-bin-minimalistic-outline", listtitle: "Delete", onClick: (user: User) => {
+        setSelectedUser(user);
+        setIsDeleteModalOpen(true);
+      },
+    },
   ];
 
   return (
@@ -124,11 +172,8 @@ const UserTable: React.FC<UserTableProps> = ({ refreshKey = 0 }) => {
               <Table.HeadCell className="p-6">ID</Table.HeadCell>
               <Table.HeadCell>Email</Table.HeadCell>
               <Table.HeadCell>Name</Table.HeadCell>
-              <Table.HeadCell>Gender</Table.HeadCell>
-              <Table.HeadCell>Address</Table.HeadCell>
-              <Table.HeadCell>Age</Table.HeadCell>
               <Table.HeadCell>Created At</Table.HeadCell>
-              <Table.HeadCell>Role</Table.HeadCell>
+              <Table.HeadCell>Updated At</Table.HeadCell>
               <Table.HeadCell></Table.HeadCell>
             </Table.Head>
             <Table.Body className="divide-y divide-border dark:divide-darkborder">
@@ -146,22 +191,24 @@ const UserTable: React.FC<UserTableProps> = ({ refreshKey = 0 }) => {
                   </Table.Cell>
                   <Table.Cell>{user.email}</Table.Cell>
                   <Table.Cell>{user.name || "N/A"}</Table.Cell>
-                  <Table.Cell>{user.gender || "N/A"}</Table.Cell>
-                  <Table.Cell>{user.address || "N/A"}</Table.Cell>
-                  <Table.Cell>{user.age || "N/A"}</Table.Cell>
                   <Table.Cell>
                     {user.createAt
                       ? new Date(user.createAt).toLocaleDateString()
                       : "N/A"}
                   </Table.Cell>
                   <Table.Cell>
+                    {user.updateAt
+                      ? new Date(user.updateAt).toLocaleDateString()
+                      : "N/A"}
+                  </Table.Cell>
+                  {/* <Table.Cell>
                     <Badge
                       color={user.role ? "lightsuccess" : "lightsecondary"}
                       className={user.role ? "text-success" : "text-secondary"}
                     >
                       {user.role?.name || "None"}
                     </Badge>
-                  </Table.Cell>
+                  </Table.Cell> */}
                   <Table.Cell>
                     <Dropdown
                       label=""
@@ -173,7 +220,7 @@ const UserTable: React.FC<UserTableProps> = ({ refreshKey = 0 }) => {
                       )}
                     >
                       {tableActionData.map((item, index) => (
-                        <Dropdown.Item key={index} className="flex gap-3">
+                        <Dropdown.Item key={index} className="flex gap-3" onClick={() => item.onClick?.(user)}>
                           <Icon icon={item.icon} height={18} />
                           <span>{item.listtitle}</span>
                         </Dropdown.Item>
@@ -203,6 +250,64 @@ const UserTable: React.FC<UserTableProps> = ({ refreshKey = 0 }) => {
           />
         </div>
       )}
+
+      {/* User detail */}
+      <UserDetail user={selectedUser}
+        isOpen={isDrawerOpen}
+        onOpen={() => setIsDrawerOpen(true)}
+        onClose={() => {
+          setIsDrawerOpen(false)
+          setSelectedUser(null)
+        }} />
+      {/* Update User */}
+      <UpdateUser user={selectedUser}
+        isOpen={isUpdateModalOpen}
+        onClose={() => {
+          setIsUpdateModalOpen(false);
+          setSelectedUser(null)
+        }} />
+      {/* Delete Confirmation Modal */}
+      <Modal show={isDeleteModalOpen} onClose={() => setIsDeleteModalOpen(false)} size="md">
+        <Modal.Header>Confirm Deletion</Modal.Header>
+        <Modal.Body>
+          <p className="text-base text-gray-700 dark:text-gray-300">
+            Are you sure you want to delete user{" "}
+            <span className="font-semibold">{selectedUser?.name}</span>?
+          </p>
+          {deleteError && (
+            <Alert color="failure" className="mt-4">
+              <span>{deleteError}</span>
+            </Alert>
+          )}
+          {deleteSuccess && (
+            <Alert color="success" className="mt-4">
+              <span>{deleteSuccess}</span>
+            </Alert>
+          )}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            color="failure"
+            onClick={handleDelete}
+            disabled={loading}
+            isProcessing={loading}
+          >
+            Delete
+          </Button>
+          <Button
+            color="gray"
+            onClick={() => {
+              setIsDeleteModalOpen(false);
+              setSelectedUser(null);
+              setDeleteError(null);
+              setDeleteSuccess(null);
+            }}
+            disabled={loading}
+          >
+            Cancel
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 };

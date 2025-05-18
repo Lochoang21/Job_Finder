@@ -43,6 +43,12 @@ const SidebarContent: MenuItem[] = [
         url: "/admin/ui/user",
       },
       {
+        name: "Company",
+        icon: "solar:bedside-table-3-linear",
+        id: uniqueId(),
+        url: "/admin/ui/company",
+      },
+      {
         name: "Form",
         icon: "solar:password-minimalistic-outline",
         id: uniqueId(),

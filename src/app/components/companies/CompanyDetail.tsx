@@ -23,6 +23,18 @@ const CompanyDetail: React.FC<CompanyDetailProps> = ({
                     {company ? (
                         <div className="space-y-4">
                             <div>
+                                {company.logo ? (
+                                    <img
+                                        src={company.logo}
+                                        alt={`${company.name} logo`}
+                                        className="h-12 w-12 rounded-full object-contain border border-gray-200 shadow-sm transition-transform hover:scale-110 dark:border-gray-600"
+                                        onError={(e) => (e.currentTarget.src = "/placeholder.png")}
+                                    />
+                                ) : (
+                                    "N/A"
+                                )}
+                            </div>
+                            <div>
                                 <Label value="ID" className="font-semibold" />
                                 <span className="text-sm text-gray-600 dark:text-gray-400">:   {company.id}</span>
                             </div>
@@ -42,12 +54,7 @@ const CompanyDetail: React.FC<CompanyDetailProps> = ({
                                     {company.description || "N/A"}
                                 </p>
                             </div>
-                            <div>
-                                <Label value="Logo" className="font-semibold" />
-                                <p className="text-sm text-gray-600 dark:text-gray-400">
-                                    {company.logo || "N/A"}
-                                </p>
-                            </div>
+
                             <div>
                                 <Label value="Created At" className="font-semibold" />
                                 <p className="text-sm text-gray-600 dark:text-gray-400">

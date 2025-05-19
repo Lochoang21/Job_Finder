@@ -38,13 +38,13 @@ const SidebarContent: MenuItem[] = [
     children: [
       {
         name: "User",
-        icon: "solar:bedside-table-3-linear",
+        icon: "solar:user-circle-linear",
         id: uniqueId(),
         url: "/admin/ui/user",
       },
       {
         name: "Company",
-        icon: "solar:bedside-table-3-linear",
+        icon: "solar:buildings-2-outline",
         id: uniqueId(),
         url: "/admin/ui/company",
       },

@@ -71,14 +71,41 @@ const UpdateCompany: React.FC<UpdateCompanyProps> = ({ company, isOpen, onClose 
   };
 
   // Upload image to backend
+  // const uploadFile = async (file: File): Promise<string> => {
+  //   const formData = new FormData();
+  //   formData.append("file", file);
+  //   formData.append("folder", "company");
+  //   const response = await api.post<{ fileName: string; uploadedAt: string }>("/files", formData, {
+  //     headers: { "Content-Type": "multipart/form-data" },
+  //   });
+  //   return `http://localhost:8080/api/v1/files?fileName=${encodeURIComponent(response.data.fileName)}&folder=company`;
+  // };
+  // Upload image to backend
   const uploadFile = async (file: File): Promise<string> => {
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("folder", "company");
-    const response = await api.post<{ fileName: string; uploadedAt: string }>("/files", formData, {
-      headers: { "Content-Type": "multipart/form-data" },
-    });
-    return `http://localhost:8080/api/v1/files?fileName=${encodeURIComponent(response.data.fileName)}&folder=company`;
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("folder", "company_logos");
+      const response = await api.post<{
+        statusCode: number;
+        error: string | null;
+        message: string;
+        data: { fileName: string; uploadedAt: string };
+      }>("/files", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      if (!response.data.data.fileName) {
+        throw new Error("File upload response missing fileName");
+      }
+      console.log("File uploaded:", response.data); // Debug log
+      // Use static URL for accessing the file
+      return `http://localhost:8080/storage/company_logos/${encodeURIComponent(response.data.data.fileName)}`;
+    } catch (err: any) {
+      console.error("File upload error:", err.response?.data || err.message);
+      throw new Error(
+        err.response?.data?.message || "Failed to upload logo image"
+      );
+    }
   };
 
   // Handle form submission

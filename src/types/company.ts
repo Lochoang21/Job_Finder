@@ -1,6 +1,6 @@
 export interface Company {
     id: number;
-    name: string;
+    name: string | null;
     description: string | null;
     address: string | null;
     logo: string | null;
@@ -22,7 +22,7 @@ export interface ResultPaginationDTO {
     result: Company[];
 }
 
-export interface ApiResponse {
+export interface CompanyResponse {
     statusCode: number;
     error: string | null;
     message: string;

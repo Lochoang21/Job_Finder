@@ -4,7 +4,7 @@ import { Badge, Dropdown, Table, TextInput, Select, Button, Spinner, Pagination,
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import { Icon } from "@iconify/react";
 import api from "@/services/api";
-import { Company, ApiResponse, DeleteCompanyResponse } from "@/types/company";
+import { Company, CompanyResponse, DeleteCompanyResponse } from "@/types/company";
 import CompanyDetail from "@/app/components/companies/CompanyDetail"
 import UpdateCompany from "./UpdateCompany";
 import CreateCompany from "@/app/components/companies/CreateCompany";
@@ -40,7 +40,7 @@ const UserTable: React.FC<CompanyTableProps> = ({ refreshKey = 0 }) => {
     setError(null);
     try {
       const filter = searchValue ? `${searchField}~\ '${searchValue}'` : "";
-      const response = await api.get<ApiResponse>("/companies", {
+      const response = await api.get<CompanyResponse>("/companies", {
         params: { page, size, filter },
       });
       setCompanies(response.data.data.result);

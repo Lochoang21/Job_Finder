@@ -1,13 +1,9 @@
 // auth.tsx (or types/user.ts)
+import { Company } from "./company";
 export enum GenderEnum {
     MALE = 'MALE',
     FEMALE = 'FEMALE',
     OTHER = 'OTHER'
-}
-export interface Company {
-    id: number;
-    name: string;
-    // Add other company fields as needed
 }
 export interface Permission {
     id: number;
@@ -92,7 +88,7 @@ export interface ResCreateUserDTO {
     gender: GenderEnum;
     address: string;
     createAt: string;
-    company: any | null;
+    company: Company | null;
     role: Role | null;
 }
 

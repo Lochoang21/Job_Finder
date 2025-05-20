@@ -49,6 +49,30 @@ const SidebarContent: MenuItem[] = [
         url: "/admin/ui/company",
       },
       {
+        name: "Job",
+        icon: "solar:letter-opened-linear",
+        id: uniqueId(),
+        url: "/admin/ui/job",
+      },
+      {
+        name: "Resume",
+        icon: "solar:clipboard-list-linear",
+        id: uniqueId(),
+        url: "/admin/ui/resume",
+      },
+      {
+        name: "Permission",
+        icon: "solar:shield-user-outline",
+        id: uniqueId(),
+        url: "/admin/ui/company",
+      },
+      {
+        name: "Role",
+        icon: "solar:user-check-rounded-outline",
+        id: uniqueId(),
+        url: "/admin/ui/company",
+      },
+      {
         name: "Form",
         icon: "solar:password-minimalistic-outline",
         id: uniqueId(),

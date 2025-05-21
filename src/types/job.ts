@@ -52,6 +52,23 @@ export interface CreateJobDTO {
     skills?: Skill[]; // Changed from number[] to Skill[]
     companyId: number;
 }
+
+
+export interface UpdateJobDTO {
+    id: number;
+    name: string;
+    location?: string;
+    salary: number;
+    quantity: number;
+    level: "INTERNSHIP" | "FRESHER" | "JUNIOR" | "MIDDLE" | "SENIOR";
+    description?: string;
+    staterDate?: string;
+    endDate?: string;
+    active: boolean;
+    skills?: Skill[];
+    companyId: number;
+}
+
 export interface ResCreateJobDTO {
     id: number;
     name: string;
@@ -66,6 +83,36 @@ export interface ResCreateJobDTO {
     createdBy: string;
     active: boolean;
 }
+
+export interface ResUpdateJobDTO {
+    id: number;
+    name: string;
+    location: string | null;
+    salary: number;
+    quantity: number;
+    level: "INTERNSHIP" | "FRESHER" | "JUNIOR" | "MIDDLE" | "SENIOR";
+    startDate: string | null; // Matches response
+    endDate: string | null;
+    skills: string[]; // Matches response
+    updatedAt: string;
+    updatedBy: string;
+    active: boolean;
+}
+
+export interface CreateJobResponse {
+    statusCode: number;
+    error: string | null;
+    message: string;
+    data: ResCreateJobDTO;
+}
+
+export interface UpdateJobResponse {
+    statusCode: number;
+    error: string | null;
+    message: string;
+    data: ResUpdateJobDTO;
+}
+
 export interface DeleteJobResponse {
     statusCode: number;
     error: string | null;

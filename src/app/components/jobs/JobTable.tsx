@@ -6,6 +6,8 @@ import { Icon } from "@iconify/react";
 import api from "@/services/api";
 import { Job, JobResponse, DeleteJobResponse } from "@/types/job";
 import CreateJob from "./CreateJob";
+import UpdateJob from "./UpdateJob";
+import JobDetail from "./JobDetail";
 
 // Custom event for refreshing the table
 const refreshTableEvent = new Event("refreshJobTable");
@@ -268,7 +270,7 @@ const JobTable: React.FC<JobTableProps> = ({ refreshKey = 0 }) => {
             />
 
             {/* Job Detail */}
-            {/* <JobDetail
+            <JobDetail
         job={selectedJob}
         isOpen={isDrawerOpen}
         onOpen={() => setIsDrawerOpen(true)}
@@ -276,16 +278,16 @@ const JobTable: React.FC<JobTableProps> = ({ refreshKey = 0 }) => {
           setIsDrawerOpen(false);
           setSelectedJob(null);
         }}
-      /> */}
+      />
             {/* Update Job */}
-            {/* <UpdateJob
+            <UpdateJob
         job={selectedJob}
         isOpen={isUpdateModalOpen}
         onClose={() => {
           setIsUpdateModalOpen(false);
           setSelectedJob(null);
         }}
-      /> */}
+      />
             {/* Delete Confirmation Modal */}
             <Modal show={isDeleteModalOpen} onClose={() => setIsDeleteModalOpen(false)} size="md">
                 <Modal.Header>Confirm Deletion</Modal.Header>

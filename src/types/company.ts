@@ -8,6 +8,7 @@ export interface Company {
     updateAt: string | null;
     createBy: string | null;
     updateBy: string | null;
+    jobCount?: number;
 }
 
 export interface Meta {

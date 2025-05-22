@@ -6,11 +6,11 @@ import Link from 'next/link';
 const Footer = () => {
     return (
         <footer className="bg-gray-900 text-white">
-            <div className="container mx-auto px-4 py-12">
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div className="container mx-auto  px-4 py-12">
+                <div className="grid grid-cols-1  md:grid-cols-4 gap-8">
                     {/* Company Info */}
                     <div>
-                        <h3 className="text-xl font-bold mb-4">JobFinder</h3>
+                        <h3 className="text-xl font-bold mb-4 text-gray-400">JobFinder</h3>
                         <p className="text-gray-400">
                             Nền tảng tìm kiếm việc làm hàng đầu Việt Nam, kết nối nhà tuyển dụng và ứng viên.
                         </p>
@@ -18,7 +18,7 @@ const Footer = () => {
 
                     {/* Quick Links */}
                     <div>
-                        <h4 className="text-lg font-semibold mb-4">Liên kết nhanh</h4>
+                        <h4 className="text-lg font-semibold mb-4 text-gray-400 ">Liên kết nhanh</h4>
                         <ul className="space-y-2">
                             <li>
                                 <Link href="/jobs" className="text-gray-400 hover:text-white">
@@ -45,7 +45,7 @@ const Footer = () => {
 
                     {/* For Employers */}
                     <div>
-                        <h4 className="text-lg font-semibold mb-4">Dành cho nhà tuyển dụng</h4>
+                        <h4 className="text-lg font-semibold mb-4 text-gray-400">Dành cho nhà tuyển dụng</h4>
                         <ul className="space-y-2">
                             <li>
                                 <Link href="/employer/register" className="text-gray-400 hover:text-white">
@@ -67,7 +67,7 @@ const Footer = () => {
 
                     {/* Contact Info */}
                     <div>
-                        <h4 className="text-lg font-semibold mb-4">Liên hệ</h4>
+                        <h4 className="text-lg font-semibold mb-4 text-gray-400">Liên hệ</h4>
                         <ul className="space-y-2">
                             <li className="text-gray-400">
                                 <i className="fas fa-map-marker-alt mr-2"></i>

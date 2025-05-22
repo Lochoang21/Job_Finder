@@ -6,6 +6,8 @@ import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import HeroSection from '@/components/home/HeroSection';
 import JobCategories from '@/components/home/JobCategories';
+import CompanyCategories from '@/components/home/CompanyCategories';
+import ListJob from '@/components/home/ListJob';
 
 export default function HomePage() {
   return (
@@ -13,7 +15,9 @@ export default function HomePage() {
       <Header />
       <main className="flex-grow">
         <HeroSection />
+        <CompanyCategories />
         <JobCategories />
+        <ListJob />
       </main>
       <Footer />
     </div>

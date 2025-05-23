@@ -27,10 +27,10 @@ const Header = () => {
 
                     {/* Desktop Navigation */}
                     <div className="hidden md:flex items-center space-x-8">
-                        <Link href="/jobs" className="text-gray-600 hover:text-primary">
+                        <Link href="/job" className="text-gray-600 hover:text-primary">
                             Tìm việc
                         </Link>
-                        <Link href="/companies" className="text-gray-600 hover:text-primary">
+                        <Link href="/company" className="text-gray-600 hover:text-primary">
                             Công ty
                         </Link>
                         <Link href="/about" className="text-gray-600 hover:text-primary">

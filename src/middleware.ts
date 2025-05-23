@@ -11,7 +11,7 @@ export function middleware(request: NextRequest) {
     console.log('Middleware check - role name:', roleName);
 
     // Check if path is public
-    const isPublicPath = ['/auth/login', '/auth/register', '/', '/auth/forbidden'].some(
+    const isPublicPath = ['/auth/login', '/auth/register', '/', '/auth/forbidden', '/job', '/company'].some(
         publicPath => path === publicPath || path.startsWith(`${publicPath}/`)
     );
 

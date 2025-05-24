@@ -7,8 +7,7 @@ export default function JobPage() {
   return (
     <div className="min-h-screen flex flex-col">
       
-    <CompanyListing/>
-     
+    1213121
     </div>
   );
 }

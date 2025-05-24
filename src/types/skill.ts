@@ -1,6 +1,6 @@
 export interface Skill {
     id: number;
-    name: string | null;
+    name: string;
     createAt: string | null;
     updateAt: string | null;
     createBy: string | null;

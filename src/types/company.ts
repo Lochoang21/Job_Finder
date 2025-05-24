@@ -1,6 +1,6 @@
 export interface Company {
     id: number;
-    name: string | null;
+    name: string;
     description: string | null;
     address: string | null;
     logo: string | null;

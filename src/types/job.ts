@@ -4,20 +4,20 @@ import { Skill } from "./skill";
 
 export interface Job {
     id: number;
-    name: string | null;
+    name: string;
     location: string | null;
     salary: number;
     quantity: number;
     level: "INTERNSHIP" | "FRESHER" | "JUNIOR" | "MIDDLE" | "SENIOR" | null;
     description: string | null;
-    staterDate: string | null;
+    staterDate: string;
     active: boolean;
-    endDate: string | null;
+    endDate: string;
     updateAt: string | null;
     createAt: string | null;
     createBy: string | null;
     updateBy: string | null;
-    company: Company | null;
+    company: Company;
     skills: Skill[];
 }
 

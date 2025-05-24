@@ -61,7 +61,7 @@ const CompanyCategories = () => {
                         {companies.slice(0, 6).map((company, index) => (
                             <Link
                                 key={company.id}
-                                href={`/jobs?company=${company.id}`}
+                                href={`/company/${company.id}`}
                                 className="block"
                             >
                                 <div className="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow">
@@ -98,7 +98,7 @@ const CompanyCategories = () => {
 
                 <div className="text-center mt-12">
                     <Link
-                        href="/companies"
+                        href="/company"
                         className="inline-block bg-primary text-white px-6 py-3 rounded-lg hover:bg-primary-dark transition-colors"
                     >
                         Xem tất cả công ty

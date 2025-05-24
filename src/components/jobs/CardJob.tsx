@@ -37,7 +37,7 @@ interface CardJobProps {
 
 const CardJob: React.FC<CardJobProps> = ({ job }) => {
   return (
-    <Link href={`/jobs/${job.id}`} className="block">
+    <Link href={`/job/${job.id}`} className="block">
       <div className="bg-white rounded-lg border border-gray-200 p-6 hover:shadow-md transition-shadow duration-200 h-full">
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-center">

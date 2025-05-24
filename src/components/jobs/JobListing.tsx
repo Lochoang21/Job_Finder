@@ -5,6 +5,7 @@ import JobFilter from './JobFilter';
 import CardJob from './CardJob';
 import api from '@/services/api';
 import { Job, JobResponse } from '@/types/job';
+import { Pagination } from 'flowbite-react';
 
 interface FilterState {
   employmentTypes: string[];
@@ -21,8 +22,10 @@ const JobListing: React.FC = () => {
     employmentTypes: [],
     skills: [],
     jobLevels: [],
-    salaryRanges: []
+    salaryRanges: [],
   });
+  const [currentPage, setCurrentPage] = useState(1);
+  const jobsPerPage = 6; // Display 6 jobs per page
 
   // Fetch jobs from API
   useEffect(() => {
@@ -33,6 +36,7 @@ const JobListing: React.FC = () => {
         const response = await api.get<JobResponse>('/jobs');
         setJobs(response.data.data.result);
         console.log('Jobs fetched:', response.data.data.result);
+        setCurrentPage(1); // Reset to page 1 when new jobs are fetched
       } catch (err: any) {
         setError(err.response?.data?.message || 'Failed to fetch jobs');
         console.error('Fetch jobs error:', err.response?.data || err.message);
@@ -45,6 +49,7 @@ const JobListing: React.FC = () => {
 
   const handleFilterChange = (newFilters: FilterState) => {
     setFilters(newFilters);
+    setCurrentPage(1); // Reset to page 1 when filters change
   };
 
   // Mapping function to convert filter values to job data values
@@ -53,19 +58,19 @@ const JobListing: React.FC = () => {
       'Entry Level': ['INTERNSHIP', 'FRESHER'],
       'Mid Level': ['JUNIOR', 'MIDDLE'],
       'Senior Level': ['SENIOR'],
-      'Director': ['SENIOR'], // Assuming Director maps to SENIOR level
-      'VP or Above': ['SENIOR']
+      'Director': ['SENIOR'],
+      'VP or Above': ['SENIOR'],
     };
     return levelMap[filterLevel] || [];
   };
 
   const mapSalaryRange = (salary: number | null): boolean => {
     if (!salary) return false;
-    
+
     // Convert VND to USD for comparison (approximate rate: 1 USD = 24,000 VND)
     const salaryInUSD = salary / 24000;
-    
-    return filters.salaryRanges.some(range => {
+
+    return filters.salaryRanges.some((range) => {
       switch (range) {
         case '$700 - $1000':
           return salaryInUSD >= 700 && salaryInUSD <= 1000;
@@ -84,7 +89,7 @@ const JobListing: React.FC = () => {
   const filteredJobs = useMemo(() => {
     if (!jobs.length) return [];
 
-    return jobs.filter(job => {
+    return jobs.filter((job) => {
       // Employment Type filter
       if (filters.employmentTypes.length > 0) {
         if (!filters.employmentTypes.includes(job.level || '')) {
@@ -92,16 +97,16 @@ const JobListing: React.FC = () => {
         }
       }
 
-      // Category filter
-     if(filters.skills.length > 0){
-        const jobSkillName = job.skills.map((skill) => skill.name);
-        const hashSkill = filters.skills.some((filterSkill) => 
-            jobSkillName.includes(filterSkill));
-        if (!hashSkill){
-            return false;
+      // Skills filter
+      if (filters.skills.length > 0) {
+        const jobSkillNames = job.skills.map((skill) => skill.name);
+        const hasSkill = filters.skills.some((filterSkill) =>
+          jobSkillNames.includes(filterSkill)
+        );
+        if (!hasSkill) {
+          return false;
         }
-     }
-    
+      }
 
       // Salary Range filter
       if (filters.salaryRanges.length > 0) {
@@ -114,6 +119,19 @@ const JobListing: React.FC = () => {
     });
   }, [filters, jobs]);
 
+  // Pagination logic
+  const totalPages = Math.ceil(filteredJobs.length / jobsPerPage);
+  const paginatedJobs = filteredJobs.slice(
+    (currentPage - 1) * jobsPerPage,
+    currentPage * jobsPerPage
+  );
+
+  const onPageChange = (page: number) => {
+    setCurrentPage(page);
+    // Optionally scroll to top of job list
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   // Loading state
   if (loading) {
     return (
@@ -125,11 +143,11 @@ const JobListing: React.FC = () => {
               <div className="w-80 bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                 <div className="h-6 bg-gray-200 rounded mb-6 animate-pulse"></div>
                 <div className="space-y-4">
-                  {[1, 2, 3, 4].map(i => (
+                  {[1, 2, 3, 4].map((i) => (
                     <div key={i} className="space-y-2">
                       <div className="h-5 bg-gray-200 rounded animate-pulse"></div>
                       <div className="space-y-1">
-                        {[1, 2, 3].map(j => (
+                        {[1, 2, 3].map((j) => (
                           <div key={j} className="h-4 bg-gray-100 rounded animate-pulse"></div>
                         ))}
                       </div>
@@ -146,7 +164,7 @@ const JobListing: React.FC = () => {
                 <div className="h-6 bg-gray-100 rounded w-1/2 animate-pulse"></div>
               </div>
               <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 gap-6">
-                {[1, 2, 3, 4, 5, 6].map(i => (
+                {[1, 2, 3, 4, 5, 6].map((i) => (
                   <div key={i} className="bg-white rounded-lg border border-gray-200 p-6 animate-pulse">
                     <div className="flex items-start justify-between mb-4">
                       <div className="flex items-center">
@@ -192,9 +210,7 @@ const JobListing: React.FC = () => {
                 />
               </svg>
             </div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">
-              Lỗi tải dữ liệu
-            </h3>
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">Lỗi tải dữ liệu</h3>
             <p className="text-gray-500 mb-4">{error}</p>
             <button
               onClick={() => window.location.reload()}
@@ -224,38 +240,42 @@ const JobListing: React.FC = () => {
               <h1 className="text-3xl font-bold text-gray-900 mb-2">
                 Danh sách <span className="text-blue-500">việc làm</span>
               </h1>
-              <p className="text-gray-600 text-lg">
-                Tìm kiếm cơ hội việc làm phù hợp với bạn
-              </p>
+              <p className="text-gray-600 text-lg">Tìm kiếm cơ hội việc làm phù hợp với bạn</p>
               <div className="mt-4 flex items-center gap-4">
                 <span className="text-sm text-gray-500">
-                  Hiển thị <span className="font-semibold">{filteredJobs.length}</span> trong số{' '}
-                  <span className="font-semibold">{jobs.length}</span> việc làm
+                  Hiển thị{' '}
+                  <span className="font-semibold">
+                    {Math.min(currentPage * jobsPerPage, filteredJobs.length)}
+                  </span>{' '}
+                  trong số <span className="font-semibold">{filteredJobs.length}</span> việc làm
                 </span>
-                {(filters.employmentTypes.length > 0 || 
-                  filters.skills.length > 0 || 
-                  filters.jobLevels.length > 0 || 
+                {(filters.employmentTypes.length > 0 ||
+                  filters.skills.length > 0 ||
+                  filters.jobLevels.length > 0 ||
                   filters.salaryRanges.length > 0) && (
-                  <span className="text-sm text-blue-600">
-                    (Kết quả đã lọc)
-                  </span>
+                  <span className="text-sm text-blue-600">(Kết quả đã lọc)</span>
                 )}
               </div>
             </div>
 
             {/* Active Filters Display */}
-            {(filters.employmentTypes.length > 0 || 
-              filters.skills.length > 0 || 
-              filters.jobLevels.length > 0 || 
+            {(filters.employmentTypes.length > 0 ||
+              filters.skills.length > 0 ||
+              filters.jobLevels.length > 0 ||
               filters.salaryRanges.length > 0) && (
               <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
                 <h3 className="text-sm font-semibold text-blue-900 mb-2">Bộ lọc đang áp dụng:</h3>
                 <div className="flex flex-wrap gap-2">
-                  {[...filters.employmentTypes, ...filters.skills, ...filters.jobLevels, ...filters.salaryRanges].map((filter, index) => (
-                    <span key={index} className="px-3 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
-                      {filter}
-                    </span>
-                  ))}
+                  {[...filters.employmentTypes, ...filters.skills, ...filters.jobLevels, ...filters.salaryRanges].map(
+                    (filter, index) => (
+                      <span
+                        key={index}
+                        className="px-3 py-1 bg-blue-100 text-blue-800 text-xs rounded-full"
+                      >
+                        {filter}
+                      </span>
+                    )
+                  )}
                 </div>
               </div>
             )}
@@ -281,16 +301,27 @@ const JobListing: React.FC = () => {
                 <h3 className="text-xl font-semibold text-gray-900 mb-2">
                   Hiện tại chưa có việc làm nào
                 </h3>
-                <p className="text-gray-500">
-                  Vui lòng quay lại sau để xem thêm cơ hội việc làm mới!
-                </p>
+                <p className="text-gray-500">Vui lòng quay lại sau để xem thêm cơ hội việc làm mới!</p>
               </div>
             ) : filteredJobs.length > 0 ? (
-              <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 gap-6">
-                {filteredJobs.map(job => (
-                  <CardJob key={job.id} job={job} />
-                ))}
-              </div>
+              <>
+                <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 gap-6 mb-8">
+                  {paginatedJobs.map((job) => (
+                    <CardJob key={job.id} job={job} />
+                  ))}
+                </div>
+                {/* Pagination */}
+                {totalPages > 1 && (
+                  <div className="flex overflow-x-auto sm:justify-center">
+                    <Pagination
+                      currentPage={currentPage}
+                      totalPages={totalPages}
+                      onPageChange={onPageChange}
+                      showIcons
+                    />
+                  </div>
+                )}
+              </>
             ) : (
               <div className="text-center py-16">
                 <div className="w-24 h-24 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center">
@@ -311,16 +342,16 @@ const JobListing: React.FC = () => {
                 <h3 className="text-xl font-semibold text-gray-900 mb-2">
                   Không tìm thấy việc làm phù hợp
                 </h3>
-                <p className="text-gray-500 mb-4">
-                  Thử điều chỉnh bộ lọc để xem thêm kết quả
-                </p>
+                <p className="text-gray-500 mb-4">Thử điều chỉnh bộ lọc để xem thêm kết quả</p>
                 <button
-                  onClick={() => setFilters({
-                    employmentTypes: [],
-                    skills: [],
-                    jobLevels: [],
-                    salaryRanges: []
-                  })}
+                  onClick={() =>
+                    setFilters({
+                      employmentTypes: [],
+                      skills: [],
+                      jobLevels: [],
+                      salaryRanges: [],
+                    })
+                  }
                   className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
                 >
                   Xóa tất cả bộ lọc
